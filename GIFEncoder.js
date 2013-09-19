@@ -153,11 +153,13 @@
 				}else{
 				  image = im;
 				}
+				
 				getImagePixels(); // convert to correct format if necessary
 				analyzePixels(); // build color table & map pixels
 				
 				if (firstFrame) 
 				{
+				    
 					writeLSD(); // logical screen descriptior
 					writePalette(); // global color table
 					if (repeat >= 0) 
@@ -169,8 +171,11 @@
 			  
 			  writeGraphicCtrlExt(); // write graphic control extension
 		      writeImageDesc(); // image descriptor
+
 		      if (!firstFrame) writePalette(); // local color table
+		      
 		      writePixels(); // encode and write pixel data
+		      
 		      firstFrame = false;
 		    } catch (e/*Error*/) {
 		      ok = false;
@@ -264,7 +269,8 @@
 		var setSize = exports.setSize = function setSize(w/*int*/, h/*int*/)/*void*/
 		{
 			
-			if (started && !firstFrame) return;
+			//*******if (started && !firstFrame) return;
+			
 		    width = w;
 		    height = h;
 		    if (width < 1)width = 320;
@@ -527,7 +533,6 @@
 		
 		var writePixels = function writePixels()/*void*/
 		{
-			
 		    var myencoder/*LZWEncoder*/ = new LZWEncoder(width, height, indexedPixels, colorDepth);
 		    myencoder.encode(out);
 			
@@ -544,9 +549,18 @@
 		}
 		
 		var setProperties = exports.setProperties = function setProperties(has_start, is_first){
+		  //*
+		  reset();
+		  
+		  
 		  started = has_start;
 		  firstFrame = is_first;
 		  //out = new ByteArray; //??
+		  
+		  
+		  //*
+		  out = new ByteArray;
+		  return started;
 		}
 		
 		return exports
