@@ -38,12 +38,12 @@ function GIFEncoder_WebWorker() {
         cba(null, encoder.stream().getData())
     }
     
-    var finish_async_internal = exports.finish_async_internal = function finish_async_internal(url, singleComplete, cba) {
+    var finish_async_internal = exports.finish_async_internal = function finish_async_internal(url, singleCompleteEvent, cba) {
         var animation_parts = new Array(this.frames.length);
         
         var crew = new WorkCrew(url, this.num_threads);
         crew.oncomplete = function(result) {
-            singleComplete()
+            if (singleCompleteEvent) singleCompleteEvent()
             console.log("done: " + result.id)
             animation_parts[result.id] = result.result.data;
         };

@@ -57,11 +57,11 @@ function cloneCanvas(oldCanvas) {
   console.log(encoder.addFrame(copy_canvas1.getContext('2d')));
   
   
-  encoder = encoder.finish_async(function(error, data) {
+  encoder = encoder.finish_async({done: function(error, data) {
       var img = 'data:image/gif;base64,'+encode64(data)
       console.log(img)
       document.getElementById('image').src = img
-  });
+  }});
   
 
 
