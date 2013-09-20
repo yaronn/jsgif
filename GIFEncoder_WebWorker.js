@@ -38,11 +38,12 @@ function GIFEncoder_WebWorker() {
         cba(null, encoder.stream().getData())
     }
     
-    var finish_async_internal = exports.finish_async_internal = function finish_async_internal(url, cba) {
+    var finish_async_internal = exports.finish_async_internal = function finish_async_internal(url, singleComplete, cba) {
         var animation_parts = new Array(this.frames.length);
         
         var crew = new WorkCrew(url, this.num_threads);
         crew.oncomplete = function(result) {
+            singleComplete()
             console.log("done: " + result.id)
             animation_parts[result.id] = result.result.data;
         };
@@ -93,13 +94,13 @@ function GIFEncoder_WebWorker() {
             xmlHttp.send( null );    
     }
         
-    var finish_async = exports.finish_async = function finish_async(cba) {
+    var finish_async = exports.finish_async = function finish_async(opt) {
         var self = this
         downloadString('https://anigif-c9-yaronn01.c9.io/jsgif/worker.js', function(err, content) {
             var blob = new Blob([content], {type: "text/javascript"})
             var url = window.webkitURL.createObjectURL(blob)
-            self.finish_async_internal(url, function(err, res) {
-                cba(null, res);
+            self.finish_async_internal(url, opt.singleComplete, function(err, res) {
+                opt.done(null, res);
             })
             
         })
