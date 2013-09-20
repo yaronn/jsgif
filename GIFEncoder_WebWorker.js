@@ -4,8 +4,9 @@ function GIFEncoder_WebWorker() {
     
     var init = exports.init = function init() {
         this.repeat = 0
-        this.delay = 500
+        this.delay = 250
         this.frames = []
+        this.num_threads = 8
     }
     
     var setRepeat = exports.setRepeat = function setRepeat(repeat) {
@@ -40,7 +41,7 @@ function GIFEncoder_WebWorker() {
     var finish_async_internal = exports.finish_async_internal = function finish_async_internal(url, cba) {
         var animation_parts = new Array(this.frames.length);
         
-        var crew = new WorkCrew(url, 8);
+        var crew = new WorkCrew(url, this.num_threads);
         crew.oncomplete = function(result) {
             console.log("done: " + result.id)
             animation_parts[result.id] = result.result.data;
@@ -58,13 +59,24 @@ function GIFEncoder_WebWorker() {
             var curr = this.frames[j]
             var imdata = curr.getImageData(0,0,curr.canvas.width, curr.canvas.height)
             var len = curr.canvas.width * curr.canvas.height * 4;
+            
+            /*
             var imarray = [];
             for(var i = 0; i < len; i++){
               imarray.push(imdata.data[i]);
+            }*/
+            
+            var msg = {
+                frame_index: j,
+                frame_length:  this.frames.length,
+                height:  curr.canvas.height, 
+                width: curr.canvas.width,
+                repeat: this.repeat,
+                delay:  this.delay,
+                imageData: imdata.data.buffer//imarray.join(',')
             }
             
-            var msg = j + ';' + this.frames.length + ';' + curr.canvas.width + ';' + curr.canvas.height + ';' + this.repeat + ';' + this.delay + ';' + imarray.join(',')
-            var id = crew.addWork(msg);
+            var id = crew.addWork(msg, [imdata.data]);
             console.log("addWork");
         }
     }

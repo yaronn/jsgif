@@ -63,7 +63,8 @@ WorkCrew.prototype.processQueue = function() {
       var worker = this.pool.shift();
       worker.id = unit.id;
       this.working[worker.id] = worker;
-      worker.postMessage(unit.work);
+      //*TODO pass transferable object in a generic way...
+      worker.postMessage(unit.work, [unit.work.imageData]);
     }
   }
 };
