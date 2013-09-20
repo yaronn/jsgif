@@ -37,10 +37,10 @@ function GIFEncoder_WebWorker() {
         cba(null, encoder.stream().getData())
     }
     
-    var finish_async = exports.finish_async = function finish_async(cba) {
+    var finish_async_internal = exports.finish_async_internal = function finish_async_internal(url, cba) {
         var animation_parts = new Array(this.frames.length);
         
-        var crew = new WorkCrew('../jsgif/worker.js', 8);
+        var crew = new WorkCrew(url, 8);
         crew.oncomplete = function(result) {
             console.log("done: " + result.id)
             animation_parts[result.id] = result.result.data;
@@ -67,6 +67,30 @@ function GIFEncoder_WebWorker() {
             var id = crew.addWork(msg);
             console.log("addWork");
         }
+    }
+    
+    function downloadString(url, cba) {
+            var xmlHttp = new XMLHttpRequest(); 
+            xmlHttp.onreadystatechange = function() {
+                
+                if (xmlHttp.readyState == 4) {
+                    cba(xmlHttp.status == 200?null:xmlHttp.status, xmlHttp.responseText)   
+                }
+            }
+            xmlHttp.open( "GET", url, true );
+            xmlHttp.send( null );    
+    }
+        
+    var finish_async = exports.finish_async = function finish_async(cba) {
+        var self = this
+        downloadString('https://anigif-c9-yaronn01.c9.io/jsgif/worker.js', function(err, content) {
+            var blob = new Blob([content], {type: "text/javascript"})
+            var url = window.webkitURL.createObjectURL(blob)
+            self.finish_async_internal(url, function(err, res) {
+                cba(null, res);
+            })
+            
+        })
     }
     
     /*

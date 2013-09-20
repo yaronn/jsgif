@@ -1,7 +1,6 @@
 
 
-
-importScripts('GIFEncoder.js', 'LZWEncoder.js', 'NeuQuant.js', 'Demos/b64.js')
+importScripts('https://anigif-c9-yaronn01.c9.io/jsgif/GIFEncoder.js', 'https://anigif-c9-yaronn01.c9.io/jsgif/LZWEncoder.js', 'https://anigif-c9-yaronn01.c9.io/jsgif/NeuQuant.js', 'https://anigif-c9-yaronn01.c9.io/jsgif/Demos/b64.js')
 
 onmessage = function (msg) {
     
