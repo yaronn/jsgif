@@ -95,7 +95,12 @@ function GIFEncoder_WebWorker() {
         var self = this
         downloadString('https://anigif-c9-yaronn01.c9.io/jsgif/worker.js', function(err, content) {
             var blob = new Blob([content], {type: "text/javascript"})
-            var url = window.webkitURL.createObjectURL(blob)
+            
+            var url = null;
+            if (window.webkitURL) url = window.webkitURL.createObjectURL(blob)
+            else url = window.URL.createObjectURL(blob)
+            
+            
             self.finish_async_internal(url, opt.singleComplete, function(err, res) {
                 opt.done(null, res);
             })
