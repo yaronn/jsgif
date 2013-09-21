@@ -45,12 +45,12 @@ function GIFEncoder_WebWorker() {
         var crew = new WorkCrew(url, this.num_threads);
         crew.oncomplete = function(result) {
             if (singleCompleteEvent) singleCompleteEvent()
-            console.log("done: " + result.id)
+            //console.log("done: " + result.id)
             animation_parts[result.id] = result.result.data;
         };
         
         crew.onfinish = function() {
-            console.log("done all")
+            //console.log("done all")
             crew.clean();
             var res = animation_parts.join('')
             cba(null, res)
@@ -74,8 +74,8 @@ function GIFEncoder_WebWorker() {
             }
             window.x = curr
             window.y = imdata
-            var id = crew.addWork(msg);
-            console.log("addWork");
+            crew.addWork(msg);
+            //console.log("addWork");
         }
     }
     
@@ -103,44 +103,6 @@ function GIFEncoder_WebWorker() {
         })
     }
     
-    /*
-     var finish_async = exports.finish_async = function finish_async(cba) {
-        var animation_parts = new Array(this.frames.length);
-        var animations_parts_done = 0;
-        var frames_count= this.frames.length;
-        
-        var workerMessage = function(idx) {
-            return function(msg) {
-               
-                if (msg.data.length<50) return;
-                    
-                    
-                animation_parts[idx] = msg.data;
-                if (++animations_parts_done==frames_count) {
-                    var res = animation_parts.join('')
-                    cba(null, res)
-                }
-            }    
-        }
-        
-        for (var j=0; j<this.frames.length; j++) {
-            
-            var curr = this.frames[j]
-            var imdata = curr.getImageData(0,0,curr.canvas.width, curr.canvas.height)
-            var len = curr.canvas.width * curr.canvas.height * 4;
-            var imarray = [];
-            for(var i = 0; i < len; i++){
-              imarray.push(imdata.data[i]);
-            }
-            
-            var worker = new Worker("../worker.js");
-            worker.onmessage = workerMessage(j);
-            var msg = j + ';' + this.frames.length + ';' + curr.canvas.width + ';' + curr.canvas.height + ';' + this.repeat + ';' + this.delay + ';' + imarray.join(',')
-            worker.postMessage(msg)
-            
-        }
-    }
-     */
     
     exports.init()
     return exports;
