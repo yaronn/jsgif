@@ -41,6 +41,7 @@ function GIFEncoder_WebWorker() {
     var finish_async_internal = exports.finish_async_internal = function finish_async_internal(url, singleCompleteEvent, cba) {
         var animation_parts = new Array(this.frames.length);
         
+        
         var crew = new WorkCrew(url, this.num_threads);
         crew.oncomplete = function(result) {
             if (singleCompleteEvent) singleCompleteEvent()
@@ -57,15 +58,10 @@ function GIFEncoder_WebWorker() {
       
         
         for (var j=0; j<this.frames.length; j++) {
+            
             var curr = this.frames[j]
             var imdata = curr.getImageData(0,0,curr.canvas.width, curr.canvas.height)
             var len = curr.canvas.width * curr.canvas.height * 4;
-            
-            /*
-            var imarray = [];
-            for(var i = 0; i < len; i++){
-              imarray.push(imdata.data[i]);
-            }*/
             
             var msg = {
                 frame_index: j,
@@ -76,8 +72,9 @@ function GIFEncoder_WebWorker() {
                 delay:  this.delay,
                 imageData: imdata.data.buffer//imarray.join(',')
             }
-            
-            var id = crew.addWork(msg, [imdata.data]);
+            window.x = curr
+            window.y = imdata
+            var id = crew.addWork(msg);
             console.log("addWork");
         }
     }
