@@ -51,8 +51,12 @@ function GIFEncoder_WebWorker() {
         
         crew.onfinish = function() {
             //console.log("done all")
+            console.log("start clean")
             crew.clean();
+            console.log("end clean")
+            console.log("start join")
             var res = animation_parts.join('')
+            console.log("end join")
             cba(null, res)
         };
       
