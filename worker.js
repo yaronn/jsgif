@@ -1,6 +1,8 @@
 
 
-importScripts('https://anigif-c9-yaronn01.c9.io/jsgif/GIFEncoder.js', 'https://anigif-c9-yaronn01.c9.io/jsgif/LZWEncoder.js', 'https://anigif-c9-yaronn01.c9.io/jsgif/NeuQuant.js', 'https://anigif-c9-yaronn01.c9.io/jsgif/Demos/b64.js')
+var base_url = typeof(base_url_injected)=="undefined"?"":base_url_injected;
+
+importScripts(base_url + 'GIFEncoder.js', base_url + 'LZWEncoder.js', base_url + 'NeuQuant.js', base_url + 'Demos/b64.js')
 
 onmessage = function (evt) {
     

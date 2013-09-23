@@ -1,4 +1,4 @@
-function GIFEncoder_WebWorker() {
+GIFEncoder_WebWorker = function(options) {
     
     var exports = {}
     
@@ -7,6 +7,7 @@ function GIFEncoder_WebWorker() {
         this.delay = 250
         this.frames = []
         this.num_threads = 8
+        this.base_url = options.base_url
     }
     
     var setRepeat = exports.setRepeat = function setRepeat(repeat) {
@@ -50,13 +51,8 @@ function GIFEncoder_WebWorker() {
         };
         
         crew.onfinish = function() {
-            //console.log("done all")
-            console.log("start clean")
             crew.clean();
-            console.log("end clean")
-            console.log("start join")
             var res = animation_parts.join('')
-            console.log("end join")
             cba(null, res)
         };
       
@@ -97,8 +93,10 @@ function GIFEncoder_WebWorker() {
         
     var finish_async = exports.finish_async = function finish_async(opt) {
         var self = this
-        downloadString('https://anigif-c9-yaronn01.c9.io/jsgif/worker.js', function(err, content) {
-            var blob = new Blob([content], {type: "text/javascript"})
+        var url = self.base_url + 'worker.js';
+        downloadString(self.base_url + 'worker.js', function(err, content) {
+            var content_working = "var base_url_injected='" + self.base_url + "';\r\n" + content;
+            var blob = new Blob([content_working], {type: "text/javascript"})
             
             var url = null;
             if (window.webkitURL) url = window.webkitURL.createObjectURL(blob)
@@ -111,11 +109,10 @@ function GIFEncoder_WebWorker() {
             
         })
     }
-    
+
     
     exports.init()
     return exports;
 }
 
 
-          

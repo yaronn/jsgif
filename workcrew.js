@@ -102,4 +102,4 @@ WorkCrew.prototype.clean = function() {
     this.results = [];
     this.pool = [];
     this.working = {};
-}
+};
